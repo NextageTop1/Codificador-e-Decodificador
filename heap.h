@@ -21,7 +21,7 @@ typedef struct MinHeap{
 MinHeap* CreateHeap(int capacidade);
 void trocarElementos(HeapElement *a, HeapElement *b);
 void minHeapify(MinHeap *a, int indice);
-void iserirHeap(MinHeap *heap, TNo *no);
+void inserirHeap(MinHeap *heap, TNo *no);
 TNo* extrairMin(MinHeap *heap);
 void destruirHeap(MinHeap *heap);
 

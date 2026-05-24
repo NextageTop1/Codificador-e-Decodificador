@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include <stdio.h>
+#include <stdlib.h>
 #include "heap.h"
 
-MinHeap* createHeap(){
+MinHeap* createHeap(int capacidade){
     MinHeap* heap = (MinHeap*)malloc(sizeof(MinHeap));
     if(heap == NULL) return NULL;
 
@@ -21,7 +21,7 @@ MinHeap* createHeap(){
 }
 
 void trocarElementos(HeapElement *a, HeapElement *b){
-    HeapElement *temp = *a;
+    HeapElement temp = *a;
     *a = *b;
     *b = temp;
 }
@@ -31,16 +31,16 @@ void minHeapify(MinHeap *heap, int indice){
     int esq = 2 * indice + 1;
     int dir = 2 * indice + 2;
 
-    if(esquerda < heap->tamanho && heap->array[esq]->frequencia < heap->array[menor]->frequencia){
-        menor = esquerda;
+    if(esq < heap->tamanho && heap->array[esq].no->frequencia < heap->array[menor].no->frequencia){
+        menor = esq;
     }
 
-    if(direita < heap->tamanho &&  heap->array[dir]->frequencia < heap->array[menor]->frequencia){
-        menor = direita;
+    if(dir < heap->tamanho &&  heap->array[dir].no->frequencia < heap->array[menor].no->frequencia){
+        menor = dir;
     }
 
     if(menor != indice){
-        trocarElementos(&heap->array[idade], &heap->array[menor]);
+        trocarElementos(&heap->array[indice], &heap->array[menor]);
         minHeapify(heap, menor);
     }
 }
@@ -56,14 +56,14 @@ void inserirHeap(MinHeap *heap, TNo *no){
     heap->array[i].no = no;
 
     int pai = (i - 1) / 2;
-    while(i != 0 && heap->array[pai].no->frequnecia > heap->array[i].no->frequencia){
+    while(i != 0 && heap->array[pai].no->frequencia > heap->array[i].no->frequencia){
         trocarElementos(&heap->array[i], &heap->array[pai]);
         i = pai;
         pai = (i - 1)/2;
     }
 }
 
-TNo* estrairMin(MinHeap *heap){
+TNo* extrairMin(MinHeap *heap){
     if(heap->tamanho <= 0) return NULL;
 
     TNo *raiz = heap->array[0].no;
@@ -78,7 +78,7 @@ TNo* estrairMin(MinHeap *heap){
     return raiz;
 }
 
-void destrurHeap(MinHeap *heap){
+void destruirHeap(MinHeap *heap){
     if(heap != NULL){
         if(heap->array != NULL){
             free(heap->array);

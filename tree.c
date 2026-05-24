@@ -44,7 +44,7 @@ void makeCodes(TNo* raiz, char* codigoAtual, int profundidade, char tabela[256][
     }
 
     if (raiz->left){
-        codigoAtual[profundidade] = '\0';
+        codigoAtual[profundidade] = '0';
         makeCodes(raiz->left, codigoAtual, profundidade + 1, tabela);
     }
 

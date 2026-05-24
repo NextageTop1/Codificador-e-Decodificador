@@ -4,7 +4,7 @@
 #include "heap.h"
 
 TNo* createNfill(unsigned char byte, int frequencia);
-TNo* createHuffmanTree(Minheap *heap);
+TNo* createHuffmanTree(MinHeap* heap);
 
 void makeCodes(TNo* raiz, char *codigoAtual, int profundidade, char tabela[256][256]);
 

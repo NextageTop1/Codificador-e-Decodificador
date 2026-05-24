@@ -1,7 +1,7 @@
 #ifndef HEAP_H
 #define HEAP_H
 
-typedef struct TNo*{
+typedef struct TNo{
     unsigned char byte;
     int frequencia;
     struct TNo *left;
@@ -18,7 +18,7 @@ typedef struct MinHeap{
     HeapElement *array;
 }MinHeap;
 
-MinHeap* CreateHeap(int capacidade);
+MinHeap* createHeap(int capacidade);
 void trocarElementos(HeapElement *a, HeapElement *b);
 void minHeapify(MinHeap *a, int indice);
 void inserirHeap(MinHeap *heap, TNo *no);

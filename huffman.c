@@ -30,7 +30,7 @@ void contarFrequencias(const char* nomeArquivo, int frequencias[256]){
 }
 
 void compactar(const char* arquivoEntrada, const char* arquivoSaida){
-    int frequencias;
+    int frequencias[256];
     contarFrequencias(arquivoEntrada, frequencias);
 
     int bytesUnicos = 0;
@@ -48,7 +48,7 @@ void compactar(const char* arquivoEntrada, const char* arquivoSaida){
     TNo* raiz = createHuffmanTree(heap);
     char tabelaCodigos[256][256] = {{0}};
     char codigoTemporario[256];
-    gerarCodigo(raiz, codigoTemporario, 0, tabelaCodigos);
+    makeCodes(raiz, codigoTemporario, 0, tabelaCodigos);
 
     FILE* in = fopen(arquivoEntrada, "rb");
     FILE* out = fopen(arquivoSaida, "wb");
@@ -72,19 +72,88 @@ void compactar(const char* arquivoEntrada, const char* arquivoSaida){
     unsigned char charLido;
 
     while(fread(&charLido, 1, 1, in) == 1){
-        escreverCodigo(out, &buffer , &contador , tabelaCodigos[charLido]);
+        escreverCodigo(out, &buffer , &contadorBits , tabelaCodigos[charLido]);
     }
 
     unsigned char lixoReal = descarregadorBitsLixo(out, &buffer, &contadorBits);
 
-
     fseek(out, posicaoLixo, SEEK_SET);
-    fwrite(&lixoReal, sizeof(unsigned char), 1, out);
+    fwrite(&lixoReal, sizeof(unsigned char), 1 , out);
+
+    fseek(out, 0 , SEEK_END);
 
     fclose(in);
     fclose(out);
     freeTree(raiz);
-    detruirHeap(heap);
-    printf("Compressao Concluida!!!\n")
+    destruirHeap(heap);
+    printf("Compressao Concluida!!!\n");
 
+}
+
+void descompactar(const char* arquivoEntrada, const char* arquivoSaida){
+    FILE* in = fopen(arquivoEntrada, "rb");
+    if(!in){
+        printf("Erro ao abrir arquivo .huff\n");
+        return;
+    }
+
+    int bytesUnicos;
+    fread(&bytesUnicos, sizeof(int), 1, in);
+
+
+    MinHeap* heap = createHeap(bytesUnicos);
+    for(int i = 0; i < bytesUnicos; i++){
+        unsigned char byte;
+        int freq;
+        fread(&byte, sizeof(unsigned char), 1, in);
+        fread(&freq, sizeof(int), 1, in);
+        inserirHeap(heap, createNfill(byte, freq));
+    }
+
+    unsigned char lixo;
+    fread(&lixo, sizeof(unsigned char), 1, in);
+
+    TNo* raiz = createHuffmanTree(heap);
+
+    FILE* out = fopen(arquivoSaida, "wb");
+
+    TNo* atual = raiz;
+    unsigned char buffer = 0;
+    int contadorBits = 0;
+    int caracteresExtraidos = 0;
+    int totalCaracteres = raiz->frequencia;
+
+    while(caracteresExtraidos < totalCaracteres){
+
+        if (raiz->left == NULL && raiz->right == NULL){
+            fwrite(&(raiz->byte), sizeof(unsigned char), 1, out);
+            caracteresExtraidos++;
+            continue;
+        }
+
+        int bit = lerBit(in, &buffer, &contadorBits);
+
+        if(bit == -1){
+            printf("A descompactação terminou antes do esperado!!!!");
+            break;
+
+        }
+
+        if (bit == 0) atual = atual->left;
+        else if (bit == 1) atual = atual->right;
+
+        if(atual->left == NULL && atual->right == NULL){
+            fwrite(&(atual->byte), sizeof(unsigned char), 1, out);
+
+            caracteresExtraidos++;
+
+            atual = raiz;
+        }
+    }
+
+    fclose(in);
+    fclose(out);
+    freeTree(raiz);
+    destruirHeap(heap);
+    printf("Descompactado com susseso !!!!");
 }

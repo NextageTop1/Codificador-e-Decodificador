@@ -1,7 +1,3 @@
-Aqui está o seu `README.md` atualizado com a nova equipe! Você pode copiar e colar diretamente no seu projeto. Lembre-se de substituir o `[Seu Nome]` pelo seu nome de verdade.
-
----
-
 # Huffman Compressor & Decompressor
 
 Implementação completa do algoritmo de Huffman em linguagem C para compressão e descompressão de arquivos utilizando estruturas de dados como Árvores Binárias, Filas de Prioridade (Min-Heap) e Tabelas Hash.

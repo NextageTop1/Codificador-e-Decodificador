@@ -98,20 +98,33 @@ void descompactar(const char* arquivoEntrada, const char* arquivoSaida){
     }
 
     int bytesUnicos;
-    fread(&bytesUnicos, sizeof(int), 1, in);
+    if (fread(&bytesUnicos, sizeof(int), 1, in) != 1) {
+        printf("Erro: Arquivo compactado vazio ou corrompido.\n");
+        fclose(in);
+        return;
+    }
 
 
     MinHeap* heap = createHeap(bytesUnicos);
     for(int i = 0; i < bytesUnicos; i++){
         unsigned char byte;
         int freq;
-        fread(&byte, sizeof(unsigned char), 1, in);
-        fread(&freq, sizeof(int), 1, in);
+        if (fread(&byte, sizeof(unsigned char), 1, in) != 1 || 
+            fread(&freq, sizeof(int), 1, in) != 1) {
+            printf("Erro: Falha ao ler a arvore do cabecalho.\n");
+            fclose(in);
+            return;
+        }
         inserirHeap(heap, createNfill(byte, freq));
     }
 
     unsigned char lixo;
-    fread(&lixo, sizeof(unsigned char), 1, in);
+    
+    if (fread(&lixo, sizeof(unsigned char), 1, in) != 1) {
+        printf("Erro: Falha ao ler a informacao de lixo no cabecalho.\n");
+        fclose(in);
+        return;
+    }
 
     TNo* raiz = createHuffmanTree(heap);
 

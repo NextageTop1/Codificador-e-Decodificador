@@ -152,7 +152,7 @@ Os seguintes arquivos foram utilizados nos testes de performance do compressor:
 
 ## 👨‍💻 Integrantes
 
-* [Seu Nome]
+* Vitor Gabriel
 * Gustavo
 * Bernardo
 
